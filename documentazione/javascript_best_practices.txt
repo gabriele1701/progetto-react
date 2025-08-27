@@ -1,0 +1,63 @@
+### Differenza tra 'let', 'const' e 'var'
+
+**const**: Usata per dichiarare costanti, ovvero variabili il cui valore non può essere riassegnato dopo l'inizializzazione. Lo scope è di blocco. È la scelta preferita per la maggior parte delle variabili per evitare riassegnazioni accidentali.
+Esempio: `const PI = 3.14;`
+
+**let**: Usata per dichiarare variabili il cui valore può essere modificato. Lo scope è di blocco, il che significa che la variabile è accessibile solo all'interno del blocco `{}` in cui è definita.
+Esempio: `let counter = 10; counter = 11;`
+
+**var**: Il modo più vecchio per dichiarare variabili. Ha uno scope di funzione, non di blocco, il che può portare a comportamenti inaspettati (hoisting). Il suo uso è fortemente sconsigliato nel codice moderno in favore di `let` e `const`.
+
+### Gestione dell'Asincronicità: Promises e Async/Await
+
+**Promises**: Una Promise è un oggetto che rappresenta il completamento o il fallimento eventuale di un'operazione asincrona. Una Promise può trovarsi in tre stati: pending (in attesa), fulfilled (completata con successo), o rejected (fallita). Si gestisce con i metodi `.then()` per il successo e `.catch()` per l'errore.
+Esempio: `fetch('url').then(response => ...).catch(error => ...);`
+
+**Async/Await**: È zucchero sintattico costruito sopra le Promises per scrivere codice asincrono in modo più leggibile e simile a quello sincrono. La keyword `async` si usa per definire una funzione che restituisce una Promise. La keyword `await` si usa all'interno di una funzione async per attendere la risoluzione di un'altra Promise, mettendo in pausa l'esecuzione della funzione senza bloccare il thread principale. È obbligatorio usare `try...catch` per la gestione degli errori.
+Esempio:
+`async function fetchData() { try { const response = await fetch('url'); } catch (error) { console.error(error); } }`
+
+### Arrow Functions (Funzioni Freccia)
+
+Le arrow functions, introdotte in ES6, forniscono una sintassi più concisa per scrivere funzioni in JavaScript. Una differenza fondamentale rispetto alle funzioni tradizionali è che non hanno un proprio `this`; ereditano il `this` dal contesto di esecuzione in cui sono definite.
+Esempio: `const add = (a, b) => a + b;`
+
+### Best Practices per l'utilizzo di Axios
+
+Axios è una delle librerie più popolari per effettuare richieste HTTP in JavaScript. Offre un'API potente e facile da usare.
+
+**Impostare header di default per tutte le richieste:**
+Per evitare di ripetere gli stessi header (come i token di autenticazione) in ogni chiamata, puoi configurarli globalmente sull'oggetto `axios.defaults`.
+
+Esempio di impostazione di un header di autorizzazione:
+```javascript
+// Imposta un header 'Authorization' per tutte le richieste future
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+```
+
+Puoi anche impostare header specifici solo per alcuni tipi di richieste (POST, GET, etc.):
+```javascript
+// Imposta un Content-Type di default solo per le richieste POST
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+```
+
+**Creare istanze di Axios per configurazioni specifiche:**
+Quando la tua applicazione deve comunicare con diverse API, ognuna con la sua configurazione (URL base, header, timeout), la best practice è creare istanze separate usando `axios.create()`. Questo evita di modificare la configurazione globale e rende il codice più modulare e sicuro.
+
+Esempio:
+```javascript
+const apiClient = axios.create({
+  baseURL: 'https://api.example.com/v1',
+  timeout: 5000, // La richiesta verrà interrotta dopo 5 secondi
+  headers: {
+    'X-Custom-Header': 'my-value'
+  }
+});
+
+// Ora puoi usare l'istanza per fare le chiamate, ereditando la configurazione
+apiClient.get('/users')
+  .then(response => {
+    console.log(response.data);
+  });
+```
+Questo approccio è più pulito e meno prono a errori rispetto alla configurazione globale.
